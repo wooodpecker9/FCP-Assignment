@@ -335,10 +335,17 @@ def parse_command_line_argument():
     parser.add_argument('-external', type=float, default=0.0)
     parser.add_argument('-alpha', type=float, default=1.0)
     parser.add_argument('-test_ising', action='store_true')
+    
     #Task 2
-
+    parser.add_argument('-defuant', action='store_true')
+    parser.add_argument('-beta', type=float, default=0.2)
+    parser.add_argument('-threshold', type=float, default=0.2)
+    parser.add_argument('-test_defuant', action='store_true')
+    
     #Task 3
-
+    parser.add_argument('-network', type=int)
+    parser.add_argument('-test_network', action='store_true')
+    
     #Task 4
     parser.add_argument('-ring_network', type=int) #ring network
     parser.add_argument('-small_world', type=int) #small world
@@ -351,16 +358,23 @@ def parse_command_line_argument():
     alpha = args.alpha
     test_ising = args.test_ising
 
+    defuant = args.defuant
+    beta = args.beta
+    threshold = args.threshold
+    test_defuant = args.threshold
+    
+    network = args.network
+    test_network = args.test_network
 
     ring_network = args.ring_network
     small_world = args.small_world
     re_wire = args.re_wire
 
-    return ising_model, external, alpha, test_ising, ring_network, small_world, re_wire
+    return ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire
 
 def main():
     
-    (ising_model, external, alpha, test_ising, ring_network, small_world, re_wire) = parse_command_line_argument()
+    (ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire) = parse_command_line_argument()
 
     if ising_model:
         population = np.random.choice([-1, 1], size=(100, 100))
