@@ -48,11 +48,84 @@ class Network:
                     self.nodes[neighbour_index].connections[index] = 1
 
     def make_ring_network(self, N, neighbour_range=1):
+        '''
+        This function makes a *ring* network of size N.
+        Each node is connected to its neighbours depending on the neighbour range n.
+        '''
+        
         #Your code  for task 4 goes here
-        pass
+        
+        self.nodes = []
+        for node_number in range(N):
+            value = np.random.random()
+            connections = [0 for _ in range(N)]
+            self.nodes.append(Node(value, node_number, connections))
+
+        for (index, node) in enumerate(self.nodes):
+            for neighbour_index in range(index+1, N):
+                if (index + neighbour_range) > N:
+                    if (index + neighbour_range - N) <= neighbour_index and (index - neighbour_range) <= neighbour_index:
+                        node.connections[neighbour_index] = 1
+                        self.nodes[neighbour_index].connections[index] = 1
+                elif (index - neighbour_range) < N:
+                     if (index + neighbour_range) <= neighbour_index and (index - neighbour_range + N) <= neighbour_index:
+                        node.connections[neighbour_index] = 1
+                        self.nodes[neighbour_index].connections[index] = 1
+
+                if (index + neighbour_range) >= neighbour_index and (index - neighbour_range) <= neighbour_index:
+                    node.connections[neighbour_index] = 1
+                    self.nodes[neighbour_index].connections[index] = 1
+
     def make_small_world_network(self, N, re_wire_prob=0.2):
-        #Your code for task 4 goes here
-        pass
+        '''
+        This function makes a *small world* network of size N. 
+        Each node if first connected to its 2 closest neighbours. 
+        Then each node is rewired depending on probibility p. 
+        '''
+        self.nodes = []
+
+        for node_number in range(N):
+            value = np.random.random()
+            connections = [0 for _ in range(N)]
+            self.nodes.append(Node(value, node_number, connections))
+
+        for (index, node) in enumerate(self.nodes):
+            for neighbour_index in range(index+1, N):
+                if np.random.random() < re_wire_prob:
+                    node.connections[neighbour_index] = 1
+                    self.nodes[neighbour_index].connections[index] = 1
+
+        neighbour_range = 2
+
+        for (index, node) in enumerate(self.nodes):
+            for neighbour_index in range(index+1, N):
+                if (index + neighbour_range) > N:
+                    if (index + neighbour_range - N) <= neighbour_index and (index - neighbour_range) <= neighbour_index:
+                        if node.connections[neighbour_index] == 1 and self.nodes[neighbour_index].connections[index] == 1:
+                            node.connections[neighbour_index] = 0
+                            self.nodes[neighbour_index].connections[index] = 0
+                        else:
+                            node.connections[neighbour_index] = 1
+                            self.nodes[neighbour_index].connections[index] = 1
+
+                elif (index - neighbour_range) < N:
+                     if (index + neighbour_range) <= neighbour_index and (index - neighbour_range + N) <= neighbour_index:
+                        if node.connections[neighbour_index] == 1 and self.nodes[neighbour_index].connections[index] == 1:
+                            node.connections[neighbour_index] = 0
+                            self.nodes[neighbour_index].connections[index] = 0
+                        else:
+                            node.connections[neighbour_index] = 1
+                            self.nodes[neighbour_index].connections[index] = 1
+
+
+                if (index + neighbour_range) >= neighbour_index and (index - neighbour_range) <= neighbour_index:
+                    if node.connections[neighbour_index] == 1 and self.nodes[neighbour_index].connections[index] == 1:
+                        node.connections[neighbour_index] = 0
+                        self.nodes[neighbour_index].connections[index] = 0
+                    else:
+                        node.connections[neighbour_index] = 1
+                        self.nodes[neighbour_index].connections[index] = 1
+
     def plot(self):
 
         fig = plt.figure()
@@ -253,20 +326,61 @@ This section contains code for the main function- you should write some code for
 ==============================================================================================================
 '''
 
-def main():
+def parse_command_line_argument():
+    #Create Parser object
     parser = argparse.ArgumentParser()
+    #Add arguments
+    #Task 1
     parser.add_argument('-ising_model', action='store_true')
     parser.add_argument('-external', type=float, default=0.0)
     parser.add_argument('-alpha', type=float, default=1.0)
     parser.add_argument('-test_ising', action='store_true')
+    #Task 2
+
+    #Task 3
+
+    #Task 4
+    parser.add_argument('-ring_network', type=int) #ring network
+    parser.add_argument('-small_world', type=int) #small world
+    parser.add_argument('-re_wire', type=float, default=0.2) #re wire
 
     args = parser.parse_args()
 
-    if args.ising_model:
+    ising_model = args.ising_model
+    external = args.external
+    alpha = args.alpha
+    test_ising = args.test_ising
+
+
+    ring_network = args.ring_network
+    small_world = args.small_world
+    re_wire = args.re_wire
+
+    return ising_model, external, alpha, test_ising, ring_network, small_world, re_wire
+
+def main():
+    
+    (ising_model, external, alpha, test_ising, ring_network, small_world, re_wire) = parse_command_line_argument()
+
+    if ising_model:
         population = np.random.choice([-1, 1], size=(100, 100))
-        ising_main(population, args.alpha, args.external)
-    elif args.test_ising:
+        ising_main(population, alpha, external)
+    elif test_ising:
         test_ising()
+    
+
+
+    if ring_network:
+        ring = Network()
+        ring.make_ring_network(ring_network)
+        ring.plot()
+        plt.show()
+    elif small_world:
+        small = Network()
+        small.make_small_world_network(small_world, re_wire) #doesnt fully work yet
+        small.plot()
+        plt.show()
+
 
 if __name__ == "__main__":
     main()
