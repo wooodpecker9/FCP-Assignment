@@ -424,94 +424,66 @@ This section contains code for the main function- you should write some code for
 ==============================================================================================================
 '''
 
-def parse_command_line_argument():
-    #Create Parser object
-    parser = argparse.ArgumentParser()
-    #Add arguments
-    #Task 1
-    parser.add_argument('-ising_model', action='store_true')
-    parser.add_argument('-external', type=float, default=0.0)
-    parser.add_argument('-alpha', type=float, default=1.0)
-    parser.add_argument('-test_ising', action='store_true')
-    
-    #Task 2
-    parser = argparse.ArgumentParser(description='Input data')
-    parser.add_argument('-defuant', action='store_true', help='using a value of beta = 0.2 and a threshold of 0.2')
-    parser.add_argument('-beta', type=float, help='Allow a user to set the value of beta')
-    parser.add_argument('-threshold', type=float, help='Allow a user to set the value of threshold')
-    parser.add_argument('-test_defuant', action='store_true',
-                        help='Allow s user to see initially random distribution of opinions begin to separate into distinct clusters')
-    
-    #Task 3
-    parser.add_argument('-network', type=int)
-    parser.add_argument('-test_network', action='store_true')
-    
-    #Task 4
-    parser.add_argument('-ring_network', type=int) #ring network
-    parser.add_argument('-small_world', type=int) #small world
-    parser.add_argument('-re_wire', type=float, default=0.2) #re wire
+def parse_command_line_arguments():
+    parser = argparse.ArgumentParser(description='Simulate various models and networks.')
+    # Task 1: Ising Model Arguments
+    parser.add_argument('-ising_model', action='store_true', help='Enable Ising model simulation')
+    parser.add_argument('-external', type=float, default=0.0, help='External magnetic field value')
+    parser.add_argument('-alpha', type=float, default=1.0, help='Interaction strength parameter')
+    parser.add_argument('-test_ising', action='store_true', help='Run Ising model test')
 
-    args = parser.parse_args()
+    # Task 2: Deffuant Model Arguments
+    parser.add_argument('-deffuant', action='store_true', help='Enable Deffuant model simulation')
+    parser.add_argument('-beta', type=float, help='Beta parameter for the Deffuant model')
+    parser.add_argument('-threshold', type=float, help='Threshold parameter for the Deffuant model')
+    parser.add_argument('-test_deffuant', action='store_true', help='Run Deffuant model test')
 
-    ising_model = args.ising_model
-    external = args.external
-    alpha = args.alpha
-    test_ising = args.test_ising
+    # Task 3: General Network Arguments
+    parser.add_argument('-network', type=int, help='General network simulation')
+    parser.add_argument('-test_network', action='store_true', help='Run general network test')
 
-    #task 2
-    if args.defuant:
-        if args.beta:
-            if args.threshold:
-                # beta and threshold
-                defuant_main(args.beta, args.threshold)
-            else:
-                # only beta
-                defuant_main(beta=args.beta)
-        elif args.threshold:
-            # only threshold
-            defuant_main(threshold=args.threshold)
-        else:
-            # default
-            defuant_main()
-    elif args.test_defuant:
-        # test
-        defuant_test()
-    else:
-        print('Please use -h or --help to see the help message')
+    # Task 4: Specific Network Topologies
+    parser.add_argument('-ring_network', type=int, help='Create a ring network of specified size')
+    parser.add_argument('-small_world', type=int, help='Create a small-world network of specified size')
+    parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
 
-
-    network = args.network
-    test_network = args.test_network
-
-    ring_network = args.ring_network
-    small_world = args.small_world
-    re_wire = args.re_wire
-
-    return ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire
+    return parser.parse_args()
 
 def main():
-    
-    (ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire) = parse_command_line_argument()
+    args = parse_command_line_arguments()
 
-    if ising_model:
+    if args.deffuant:
+        if args.beta is not None and args.threshold is not None:
+            defuant_main(beta=args.beta, threshold=args.threshold)
+        elif args.beta is not None:
+            defuant_main(beta=args.beta)
+        elif args.threshold is not None:
+            defuant_main(threshold=args.threshold)
+        else:
+            defuant_main()
+    elif args.test_deffuant:
+        defuant_test()
+
+    if args.ising_model:
         population = np.random.choice([-1, 1], size=(100, 100))
-        ising_main(population, alpha, external)
-    elif test_ising:
+        ising_main(population, args.alpha, args.external)
+    elif args.test_ising:
         test_ising()
-    
 
-
-    if ring_network:
+    if args.ring_network:
         ring = Network()
-        ring.make_ring_network(ring_network)
+        ring.make_ring_network(args.ring_network)
         ring.plot()
         plt.show()
-    elif small_world:
+    elif args.small_world:
         small = Network()
-        small.make_small_world_network(small_world, re_wire) #doesnt fully work yet
+        small.make_small_world_network(args.small_world, args.re_wire)
         small.plot()
         plt.show()
 
+    # Ensure proper fallback if no suitable argument is provided
+    if not any([args.deffuant, args.test_deffuant, args.ising_model, args.test_ising, args.ring_network, args.small_world]):
+        print('Please use -h or --help for command usage details.')
 
 if __name__ == "__main__":
     main()
