@@ -425,24 +425,21 @@ This section contains code for the main function- you should write some code for
 '''
 
 def parse_command_line_arguments():
-    parser = argparse.ArgumentParser(description='Simulate various models and networks.')
-    # Task 1: Ising Model Arguments
+    parser = argparse.ArgumentParser()
+
     parser.add_argument('-ising_model', action='store_true', help='Enable Ising model simulation')
     parser.add_argument('-external', type=float, default=0.0, help='External magnetic field value')
     parser.add_argument('-alpha', type=float, default=1.0, help='Interaction strength parameter')
     parser.add_argument('-test_ising', action='store_true', help='Run Ising model test')
 
-    # Task 2: Deffuant Model Arguments
     parser.add_argument('-deffuant', action='store_true', help='Enable Deffuant model simulation')
     parser.add_argument('-beta', type=float, help='Beta parameter for the Deffuant model')
     parser.add_argument('-threshold', type=float, help='Threshold parameter for the Deffuant model')
     parser.add_argument('-test_deffuant', action='store_true', help='Run Deffuant model test')
 
-    # Task 3: General Network Arguments
     parser.add_argument('-network', type=int, help='General network simulation')
     parser.add_argument('-test_network', action='store_true', help='Run general network test')
 
-    # Task 4: Specific Network Topologies
     parser.add_argument('-ring_network', type=int, help='Create a ring network of specified size')
     parser.add_argument('-small_world', type=int, help='Create a small-world network of specified size')
     parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
@@ -481,7 +478,6 @@ def main():
         small.plot()
         plt.show()
 
-    # Ensure proper fallback if no suitable argument is provided
     if not any([args.deffuant, args.test_deffuant, args.ising_model, args.test_ising, args.ring_network, args.small_world]):
         print('Please use -h or --help for command usage details.')
 
