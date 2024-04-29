@@ -312,13 +312,111 @@ def ising_main(population, alpha=None, external=0.0):
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
+def update_opinion(opinions, beta, threshold):
+    tmp_opinions = opinions.copy()
+    for i in range(len(opinions)):
+        left = i - 1 if i > 0 else -1
+        right = i + 1 if i < len(opinions) - 1 else 0
 
-def defuant_main():
+        if abs(opinions[left] - opinions[i]) < threshold:
+            # x_i(t+1) = x_i(t) + beta * (x_j(t) - x_i(t))
+            tmp_opinions[i] = opinions[i] + beta * (opinions[left] - opinions[i])
+            tmp_opinions[left] = opinions[left] + beta * (opinions[i] - opinions[left])
+        if abs(opinions[right] - opinions[i]) < threshold:
+            tmp_opinions[i] = opinions[i] + beta * (opinions[right] - opinions[i])
+            tmp_opinions[right] = opinions[right] + beta * (opinions[i] - opinions[right])
+    return tmp_opinions
+def defuant_main(beta=0.2,threshold=0.2):
     #Your code for task 2 goes here
-    pass
+
+    population = 100
+    steps = 100
+
+    opinions = np.random.rand(population)
+
+    # plt.figure(figsize=(6, 10))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))  # 1 row, 2 columns
+
+    for t in range(steps):
+        opinions = update_opinion(opinions, beta, threshold)
+
+        ax1.cla()
+        ax1.hist(opinions)
+        ax1.set_xlim(0,1)
+        ax1.set_xlabel('opinion')
+
+        ax2.scatter([t] * steps, opinions, color='red', alpha=0.6)
+        ax2.set_ylim(0, 1)
+        ax2.set_xlim(0, t + 1)
+        ax2.set_ylabel('opinion')
+        fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f}')
+        plt.pause(0.2)
+    plt.show()
 def test_defuant():
     #Your code for task 2 goes here
-    pass
+    population = 100
+    steps = 100
+
+    opinions = np.random.rand(population)
+
+    beta1 = 0.5
+    beta2 = 0.1
+
+    threshold1 = 0.5
+    threshold2 = 0.1
+    threshold3 = 0.2
+
+    opinions1 = opinions
+    opinions2 = opinions
+    opinions3 = opinions
+    opinions4 = opinions
+
+    fig, axs = plt.subplots(2, 4, figsize=(12, 10))  # 1 row, 2 columns
+    fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.3, hspace=0.2)
+    for t in range(steps):
+        opinions1 = update_opinion(opinions1, beta1, threshold1)
+        opinions2 = update_opinion(opinions2, beta2, threshold1)
+        opinions3 = update_opinion(opinions3, beta1, threshold2)
+        opinions4 = update_opinion(opinions4, beta2, threshold3)
+
+        axs[0, 0].cla()
+        axs[0, 0].set_xlim(0, 1)
+        axs[0, 0].hist(opinions1)
+
+        axs[0, 1].scatter([t] * steps, opinions1, color='red')
+        axs[0, 1].set_ylim(0, 1)
+        axs[0, 1].set_xlim(0, t + 1)
+        axs[0, 1].set_ylabel('opinion')
+
+        axs[0, 2].cla()
+        axs[0, 2].set_xlim(0, 1)
+        axs[0, 2].hist(opinions2)
+
+        axs[0, 3].scatter([t] * steps, opinions2, color='red')
+        axs[0, 3].set_ylim(0, 1)
+        axs[0, 3].set_xlim(0, t + 1)
+        axs[0, 3].set_ylabel('opinion')
+
+        axs[1, 0].cla()
+        axs[1, 0].set_xlim(0, 1)
+        axs[1, 0].hist(opinions3)
+
+        axs[1, 1].scatter([t] * steps, opinions3, color='red')
+        axs[1, 1].set_ylim(0, 1)
+        axs[1, 1].set_xlim(0, t + 1)
+        axs[1, 1].set_ylabel('opinion')
+
+        axs[1, 2].cla()
+        axs[1, 2].set_xlim(0, 1)
+        axs[1, 2].hist(opinions4)
+
+        axs[1, 3].scatter([t] * steps, opinions4, color='red')
+        axs[1, 3].set_ylim(0, 1)
+        axs[1, 3].set_xlim(0, t + 1)
+        axs[1, 3].set_ylabel('opinion')
+
+        plt.pause(0.05)
+    plt.show()
 
 '''
 ==============================================================================================================
@@ -337,10 +435,12 @@ def parse_command_line_argument():
     parser.add_argument('-test_ising', action='store_true')
     
     #Task 2
-    parser.add_argument('-defuant', action='store_true')
-    parser.add_argument('-beta', type=float, default=0.2)
-    parser.add_argument('-threshold', type=float, default=0.2)
-    parser.add_argument('-test_defuant', action='store_true')
+    parser = argparse.ArgumentParser(description='Input data')
+    parser.add_argument('-defuant', action='store_true', help='using a value of beta = 0.2 and a threshold of 0.2')
+    parser.add_argument('-beta', type=float, help='Allow a user to set the value of beta')
+    parser.add_argument('-threshold', type=float, help='Allow a user to set the value of threshold')
+    parser.add_argument('-test_defuant', action='store_true',
+                        help='Allow s user to see initially random distribution of opinions begin to separate into distinct clusters')
     
     #Task 3
     parser.add_argument('-network', type=int)
@@ -358,11 +458,28 @@ def parse_command_line_argument():
     alpha = args.alpha
     test_ising = args.test_ising
 
-    defuant = args.defuant
-    beta = args.beta
-    threshold = args.threshold
-    test_defuant = args.threshold
-    
+    #task 2
+    if args.defuant:
+        if args.beta:
+            if args.threshold:
+                # beta and threshold
+                defuant_main(args.beta, args.threshold)
+            else:
+                # only beta
+                defuant_main(beta=args.beta)
+        elif args.threshold:
+            # only threshold
+            defuant_main(threshold=args.threshold)
+        else:
+            # default
+            defuant_main()
+    elif args.test_defuant:
+        # test
+        defuant_test()
+    else:
+        print('Please use -h or --help to see the help message')
+
+
     network = args.network
     test_network = args.test_network
 
