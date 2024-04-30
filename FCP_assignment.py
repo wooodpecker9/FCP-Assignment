@@ -450,6 +450,9 @@ def parse_command_line_argument():
     parser.add_argument('-small_world', type=int) #small world
     parser.add_argument('-re_wire', type=float, default=0.2) #re wire
 
+    #Task 5
+    parser.add_argument('-use_network', type=int)
+
     args = parser.parse_args()
 
     ising_model = args.ising_model
@@ -469,11 +472,13 @@ def parse_command_line_argument():
     small_world = args.small_world
     re_wire = args.re_wire
 
-    return ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire
+    use_network = args.use_network
+
+    return ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire, use_network
 
 def main():
     
-    (ising_model, external, alpha, test_ising, defuant, beta, threshold, defuant_test, network, test_network, ring_network, small_world, re_wire) = parse_command_line_argument()
+    (ising_model, external, alpha, test_ising, defuant, beta, threshold, defuant_test, network, test_network, ring_network, small_world, re_wire, network_use) = parse_command_line_argument()
 
     #task 1
     if ising_model:
