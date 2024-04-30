@@ -463,7 +463,7 @@ def parse_command_line_argument():
     defuant = args.defuant
     beta = args.beta
     threshold = args.threshold
-    test_defuant = args.threshold
+    test_defuant = args.test_defuant
 
     network = args.network
     test_network = args.test_network
