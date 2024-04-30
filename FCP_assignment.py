@@ -477,7 +477,7 @@ def parse_command_line_argument():
     return ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire, use_network
 
 def main():
-    
+
     (ising_model, external, alpha, test_ising, defuant, beta, threshold, defuant_test, network, test_network, ring_network, small_world, re_wire, network_use) = parse_command_line_argument()
 
     #task 1
@@ -489,7 +489,10 @@ def main():
     
     #task 2
     if defuant:
-        defuant_main(beta, threshold)
+        if network_use:
+            return # use network ()
+        else:
+            defuant_main(beta, threshold)
     elif defuant_test:
         # test
         test_defuant()
