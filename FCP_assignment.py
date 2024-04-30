@@ -435,7 +435,6 @@ def parse_command_line_argument():
     parser.add_argument('-test_ising', action='store_true')
     
     #Task 2
-    parser = argparse.ArgumentParser(description='Input data')
     parser.add_argument('-defuant', action='store_true', help='using a value of beta = 0.2 and a threshold of 0.2')
     parser.add_argument('-beta', type=float, help='Allow a user to set the value of beta')
     parser.add_argument('-threshold', type=float, help='Allow a user to set the value of threshold')
@@ -500,9 +499,7 @@ def main():
             defuant_main()
     elif test_defuant:
         # test
-        defuant_test()
-    else:
-        print('Please use -h or --help to see the help message')
+        test_defuant()
     
     #task 3
     
