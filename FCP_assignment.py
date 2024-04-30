@@ -316,20 +316,22 @@ def ising_main(population, alpha=None, external=0.0):
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
-def update_opinion(opinions, beta, threshold):
-    
-    tmp_opinions = opinions.copy()
-    for i in range(len(opinions)):
-        left = i - 1 if i > 0 else -1
-        right = i + 1 if i < len(opinions) - 1 else 0
-        
-        if abs(opinions[left] - opinions[i]) < threshold:
-            # x_i(t+1) = x_i(t) + beta * (x_j(t) - x_i(t))
-            tmp_opinions[i] = opinions[i] + beta * (opinions[left] - opinions[i])
-            tmp_opinions[left] = opinions[left] + beta * (opinions[i] - opinions[left])
-        if abs(opinions[right] - opinions[i]) < threshold:
-            tmp_opinions[i] = opinions[i] + beta * (opinions[right] - opinions[i])
-            tmp_opinions[right] = opinions[right] + beta * (opinions[i] - opinions[right])
+def update_opinion(input, beta, threshold):
+    opinions = input.copy()
+    tmp_opinions = input.copy()
+    # randomly choose one person
+    i = np.random.randint(0, len(opinions), 1)
+
+    # randomly choose one neighbor from that person
+    if np.random.randint(0, 2, 1) == 0:
+        j = i - 1 if i > 0 else -1
+    else:
+        j = i + 1 if i < len(opinions) - 1 else 0
+
+    # update opinion
+    if abs(opinions[j] - opinions[i]) < threshold:
+        tmp_opinions[i] = opinions[i] + beta * (opinions[j] - opinions[i])
+        tmp_opinions[j] = opinions[j] + beta * (opinions[i] - opinions[j])
     
     return tmp_opinions
 
@@ -338,25 +340,28 @@ def defuant_main(beta=0.2,threshold=0.2):
     
     #Your code for task 2 goes here
     population = 100
-    steps = 100
-    
+    steps = 10000
+    interval = 100
+
     opinions = np.random.rand(population)
-   
-    # plt.figure(figsize=(6, 10))
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 10))  # 1 row, 2 columns
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8))  # 1 row, 2 columns
+    fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f}')
     for t in range(steps):
         opinions = update_opinion(opinions, beta, threshold)
-        ax1.cla()
-        ax1.hist(opinions)
-        ax1.set_xlim(0,1)
-        ax1.set_xlabel('Opinion')
-        
-        ax2.scatter([t] * steps, opinions, color='red', alpha=0.6)
-        ax2.set_ylim(0, 1)
-        ax2.set_xlim(0, t + 1)
-        ax2.set_ylabel('Opinion')
-        fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f}')
-        plt.pause(0.2)
+        if t % interval == 0:
+            ax1.cla()
+            ax1.hist(opinions)
+            ax1.set_xlim(0, 1)
+            ax1.set_xlabel('opinion')
+
+            ax2.scatter([t // interval] * population, opinions, color='red')
+            ax2.set_ylim(0, 1)
+            ax2.set_xlim(0, t // interval)
+            ax2.set_ylabel('opinion')
+
+            plt.pause(0.05)
+
     plt.show()
 
 
@@ -491,7 +496,7 @@ def main():
         small.plot() # doesnt fully work yet
         plt.show()
 
-    if not any([args.deffuant, args.test_deffuant, args.ising_model, args.test_ising, args.ring_network, args.small_world]):
+    if not any([args.defuant, args.test_defuant, args.ising_model, args.test_ising, args.ring_network, args.small_world]):
         print('Please use -h or --help for command usage details.')
 
 if __name__ == "__main__":
