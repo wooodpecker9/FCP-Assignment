@@ -436,8 +436,8 @@ def parse_command_line_argument():
     
     #Task 2
     parser.add_argument('-defuant', action='store_true', help='using a value of beta = 0.2 and a threshold of 0.2')
-    parser.add_argument('-beta', type=float, help='Allow a user to set the value of beta')
-    parser.add_argument('-threshold', type=float, help='Allow a user to set the value of threshold')
+    parser.add_argument('-beta', type=float, default=0.2, help='Allow a user to set the value of beta')
+    parser.add_argument('-threshold', type=float, default=0.2, help='Allow a user to set the value of threshold')
     parser.add_argument('-test_defuant', action='store_true',
                         help='Allow s user to see initially random distribution of opinions begin to separate into distinct clusters')
     
@@ -473,7 +473,7 @@ def parse_command_line_argument():
 
 def main():
     
-    (ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire) = parse_command_line_argument()
+    (ising_model, external, alpha, test_ising, defuant, beta, threshold, defuant_test, network, test_network, ring_network, small_world, re_wire) = parse_command_line_argument()
 
     #task 1
     if ising_model:
@@ -484,20 +484,8 @@ def main():
     
     #task 2
     if defuant:
-        if beta:
-            if threshold:
-                # beta and threshold
-                defuant_main(beta, threshold)
-            else:
-                # only beta
-                defuant_main(beta=beta)
-        elif threshold:
-            # only threshold
-            defuant_main(threshold=threshold)
-        else:
-            # default
-            defuant_main()
-    elif test_defuant:
+        defuant_main(beta, threshold)
+    elif defuant_test:
         # test
         test_defuant()
     
