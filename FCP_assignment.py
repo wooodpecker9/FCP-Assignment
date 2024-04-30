@@ -458,27 +458,10 @@ def parse_command_line_argument():
     alpha = args.alpha
     test_ising = args.test_ising
 
-    #task 2
-    if args.defuant:
-        if args.beta:
-            if args.threshold:
-                # beta and threshold
-                defuant_main(args.beta, args.threshold)
-            else:
-                # only beta
-                defuant_main(beta=args.beta)
-        elif args.threshold:
-            # only threshold
-            defuant_main(threshold=args.threshold)
-        else:
-            # default
-            defuant_main()
-    elif args.test_defuant:
-        # test
-        defuant_test()
-    else:
-        print('Please use -h or --help to see the help message')
-
+    defuant = args.defuant
+    beta = args.beta
+    threshold = args.threshold
+    test_defuant = args.threshold
 
     network = args.network
     test_network = args.test_network
@@ -493,14 +476,38 @@ def main():
     
     (ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, network, test_network, ring_network, small_world, re_wire) = parse_command_line_argument()
 
+    #task 1
     if ising_model:
         population = np.random.choice([-1, 1], size=(100, 100))
         ising_main(population, alpha, external)
     elif test_ising:
         test_ising()
     
+    #task 2
+    if defuant:
+        if beta:
+            if threshold:
+                # beta and threshold
+                defuant_main(beta, threshold)
+            else:
+                # only beta
+                defuant_main(beta=beta)
+        elif threshold:
+            # only threshold
+            defuant_main(threshold=threshold)
+        else:
+            # default
+            defuant_main()
+    elif test_defuant:
+        # test
+        defuant_test()
+    else:
+        print('Please use -h or --help to see the help message')
+    
+    #task 3
+    
 
-
+    #task 4
     if ring_network:
         ring = Network()
         ring.make_ring_network(ring_network)
