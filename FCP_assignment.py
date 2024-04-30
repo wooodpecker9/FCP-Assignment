@@ -220,6 +220,16 @@ def calculate_agreement(population, row, col, external=0.0):
     n_rows, n_cols = population.shape
     neighbors = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
     agreement = 0
+
+    # Circular boundary conditions
+    if row == 0:
+        neighbors.append((n_rows-1, col))
+    elif row == n_rows - 1:
+        neighbors.append((0, col))
+    if col == 0:
+        neighbors.append((row, n_cols-1))
+    elif col == n_cols - 1:
+        neighbors.append((row, 0))
     
     for r, c in neighbors:
         if 0 <= r < n_rows and 0 <= c < n_cols:
@@ -339,12 +349,12 @@ def defuant_main(beta=0.2,threshold=0.2):
         ax1.cla()
         ax1.hist(opinions)
         ax1.set_xlim(0,1)
-        ax1.set_xlabel('opinion')
+        ax1.set_xlabel('Opinion')
         
         ax2.scatter([t] * steps, opinions, color='red', alpha=0.6)
         ax2.set_ylim(0, 1)
         ax2.set_xlim(0, t + 1)
-        ax2.set_ylabel('opinion')
+        ax2.set_ylabel('Opinion')
         fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f}')
         plt.pause(0.2)
     plt.show()
@@ -385,7 +395,7 @@ def test_defuant():
         axs[0, 1].scatter([t] * steps, opinions1, color='red')
         axs[0, 1].set_ylim(0, 1)
         axs[0, 1].set_xlim(0, t + 1)
-        axs[0, 1].set_ylabel('opinion')
+        axs[0, 1].set_ylabel('Opinion')
        
         axs[0, 2].cla()
         axs[0, 2].set_xlim(0, 1)
@@ -394,7 +404,7 @@ def test_defuant():
         axs[0, 3].scatter([t] * steps, opinions2, color='red')
         axs[0, 3].set_ylim(0, 1)
         axs[0, 3].set_xlim(0, t + 1)
-        axs[0, 3].set_ylabel('opinion')
+        axs[0, 3].set_ylabel('Opinion')
        
         axs[1, 0].cla()
         axs[1, 0].set_xlim(0, 1)
@@ -403,7 +413,7 @@ def test_defuant():
         axs[1, 1].scatter([t] * steps, opinions3, color='red')
         axs[1, 1].set_ylim(0, 1)
         axs[1, 1].set_xlim(0, t + 1)
-        axs[1, 1].set_ylabel('opinion')
+        axs[1, 1].set_ylabel('Opinion')
         
         axs[1, 2].cla()
         axs[1, 2].set_xlim(0, 1)
@@ -412,7 +422,7 @@ def test_defuant():
         axs[1, 3].scatter([t] * steps, opinions4, color='red')
         axs[1, 3].set_ylim(0, 1)
         axs[1, 3].set_xlim(0, t + 1)
-        axs[1, 3].set_ylabel('opinion')
+        axs[1, 3].set_ylabel('Opinion')
         
         plt.pause(0.05)
     plt.show()
@@ -428,14 +438,14 @@ def parse_command_line_arguments():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-ising_model', action='store_true', help='Enable Ising model simulation')
-    parser.add_argument('-external', type=float, default=0.0, help='External magnetic field value')
-    parser.add_argument('-alpha', type=float, default=1.0, help='Interaction strength parameter')
+    parser.add_argument('-external', type=float, default=0.0, help='External pull value')
+    parser.add_argument('-alpha', type=float, default=1.0, help='Tempurature parameter')
     parser.add_argument('-test_ising', action='store_true', help='Run Ising model test')
 
-    parser.add_argument('-deffuant', action='store_true', help='Enable Deffuant model simulation')
+    parser.add_argument('-defuant', action='store_true', help='Enable Deffuant model simulation')
     parser.add_argument('-beta', type=float, help='Beta parameter for the Deffuant model')
     parser.add_argument('-threshold', type=float, help='Threshold parameter for the Deffuant model')
-    parser.add_argument('-test_deffuant', action='store_true', help='Run Deffuant model test')
+    parser.add_argument('-test_defuant', action='store_true', help='Run Deffuant model test')
 
     parser.add_argument('-network', type=int, help='General network simulation')
     parser.add_argument('-test_network', action='store_true', help='Run general network test')
@@ -457,20 +467,16 @@ def main():
         test_ising()
     
     #task2
-    if args.deffuant:
-        if args.network_use:
-            # Use network
-            return
+    if args.defuant:
+        if args.beta is not None and args.threshold is not None:
+            defuant_main(beta=args.beta, threshold=args.threshold)
+        elif args.beta is not None:
+            defuant_main(beta=args.beta)
+        elif args.threshold is not None:
+            defuant_main(threshold=args.threshold)
         else:
-            if args.beta is not None and args.threshold is not None:
-                defuant_main(beta=args.beta, threshold=args.threshold)
-            elif args.beta is not None:
-                defuant_main(beta=args.beta)
-            elif args.threshold is not None:
-                defuant_main(threshold=args.threshold)
-            else:
-                defuant_main()
-    elif args.test_deffuant:
+            defuant_main()
+    elif args.test_defuant:
         defuant_test()
 
     #task 4
