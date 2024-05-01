@@ -80,47 +80,47 @@ class Network:
         Then each node is rewired depending on probibility p. 
         '''
         self.nodes = []
-
+        neighbour_range = 2
+        
+        
         for node_number in range(N):
             value = np.random.random()
             connections = [0 for _ in range(N)]
             self.nodes.append(Node(value, node_number, connections))
-       
-        for (index, node) in enumerate(self.nodes):
-            for neighbour_index in range(index+1, N):
-                if np.random.random() < re_wire_prob:
-                    node.connections[neighbour_index] = 1
-                    self.nodes[neighbour_index].connections[index] = 1
-       
-        neighbour_range = 2
         
+        connection = []
+
         for (index, node) in enumerate(self.nodes):
             for neighbour_index in range(index+1, N):
                 if (index + neighbour_range) > N:
                     if (index + neighbour_range - N) <= neighbour_index and (index - neighbour_range) <= neighbour_index:
-                        if node.connections[neighbour_index] == 1 and self.nodes[neighbour_index].connections[index] == 1:
-                            node.connections[neighbour_index] = 0
-                            self.nodes[neighbour_index].connections[index] = 0
-                        else:
-                            node.connections[neighbour_index] = 1
-                            self.nodes[neighbour_index].connections[index] = 1
-                
-                elif (index - neighbour_range) < N:
-                     if (index + neighbour_range) <= neighbour_index and (index - neighbour_range + N) <= neighbour_index:
-                        if node.connections[neighbour_index] == 1 and self.nodes[neighbour_index].connections[index] == 1:
-                            node.connections[neighbour_index] = 0
-                            self.nodes[neighbour_index].connections[index] = 0
-                        else:
-                            node.connections[neighbour_index] = 1
-                            self.nodes[neighbour_index].connections[index] = 1
-               
-                if (index + neighbour_range) >= neighbour_index and (index - neighbour_range) <= neighbour_index:
-                    if node.connections[neighbour_index] == 1 and self.nodes[neighbour_index].connections[index] == 1:
-                        node.connections[neighbour_index] = 0
-                        self.nodes[neighbour_index].connections[index] = 0
-                    else:
+                        connection.append([index, neighbour_index])
                         node.connections[neighbour_index] = 1
                         self.nodes[neighbour_index].connections[index] = 1
+                elif (index - neighbour_range) < N:
+                     if (index + neighbour_range) <= neighbour_index and (index - neighbour_range + N) <= neighbour_index:
+                        connection.append([index, neighbour_index])
+                        node.connections[neighbour_index] = 1
+                        self.nodes[neighbour_index].connections[index] = 1
+                
+                if (index + neighbour_range) >= neighbour_index and (index - neighbour_range) <= neighbour_index:
+                    connection.append([index, neighbour_index])
+                    node.connections[neighbour_index] = 1
+                    self.nodes[neighbour_index].connections[index] = 1
+
+        for (index, node) in enumerate(self.nodes):
+            for neighbour_index in range(index+1, N):
+                if search(connection, index, neighbour_index):
+                    if np.random.random() < re_wire_prob:
+                        flag = True
+                        while flag:
+                            ran = np.random.randint(0, 10)
+                            flag = search(connection, index, ran)
+                        connection[index] = [index, ran]
+                        node.connections[neighbour_index] = 0
+                        self.nodes[neighbour_index].connections[index] = 0
+                        node.connections[ran] = 1
+                        self.nodes[ran].connections[index] = 1
 
 
     def plot(self):
@@ -431,6 +431,15 @@ def test_defuant():
         
         plt.pause(0.05)
     plt.show()
+
+# task 4 stuff
+def search(list, zero, one):
+    for l in list:
+        if l[0] == zero and l[1] == one:
+            return True
+        elif l[0] == one and l[1] == zero:
+            return True
+    return False
 
 '''
 ==============================================================================================================
