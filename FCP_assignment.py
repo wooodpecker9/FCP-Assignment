@@ -316,24 +316,40 @@ def ising_main(population, alpha=None, external=0.0):
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
-def update_opinion(input, beta, threshold):
-    opinions = input.copy()
-    tmp_opinions = input.copy()
+def update_opinion(input, beta, threshold, use_network=False):
+
     # randomly choose one person
-    i = np.random.randint(0, len(opinions), 1)
+    if use_network:
+        tmp_nodes = input.nodes.copy()
+        i = np.random.randint(0, len(input.nodes))
+        neighbors = np.array(input.nodes[i].connections)
 
-    # randomly choose one neighbor from that person
-    if np.random.randint(0, 2, 1) == 0:
-        j = i - 1 if i > 0 else -1
+        if np.count_nonzero(neighbors) > 0:
+            j = np.random.choice(np.where(neighbors==1)[0])
+
+            if abs(input.nodes[j].value - input.nodes[i].value) < threshold:
+                tmp_nodes[i].value = input.nodes[i].value + beta * (input.nodes[j].value - input.nodes[i].value)
+                tmp_nodes[j].value = input.nodes[j].value + beta * (input.nodes[i].value - input.nodes[j].value)
+            input.nodes = tmp_nodes.copy()
+
+        return input
+
     else:
-        j = i + 1 if i < len(opinions) - 1 else 0
+        opinions = input.copy()
+        tmp_opnions = input.copy()
+        i = np.random.randint(0, len(opinions), 1)
 
-    # update opinion
-    if abs(opinions[j] - opinions[i]) < threshold:
-        tmp_opinions[i] = opinions[i] + beta * (opinions[j] - opinions[i])
-        tmp_opinions[j] = opinions[j] + beta * (opinions[i] - opinions[j])
-    
-    return tmp_opinions
+        # radomly choose one neighbor from that person
+        if np.random.randint(0,2,1) == 0:
+            j = i - 1 if i > 0 else -1
+        else:
+            j = i + 1 if i < len(opinions) - 1 else 0
+
+        # update opinion
+        if abs(opinions[j] - opinions[i]) < threshold:
+            tmp_opnions[i] = opinions[i] + beta * (opinions[j] - opinions[i])
+            tmp_opnions[j] = opinions[j] + beta * (opinions[i] - opinions[j])
+        return tmp_opnions
 
 
 def defuant_main(beta=0.2,threshold=0.2):
@@ -432,6 +448,54 @@ def test_defuant():
         plt.pause(0.05)
     plt.show()
 
+
+'''
+==============================================================================================================
+This section contains code for the task 5
+==============================================================================================================
+'''
+
+def use_network(beta=0.5, threshold=0.5, N=100):
+    population = N
+    steps = 10000
+
+    interval = 100
+    network = Network()
+    network.make_small_world_network(population, re_wire_prob=0.01)
+
+    fig = plt.figure()
+    for t in range(steps):
+        network = update_opinion(network, beta, threshold, use_network=True)
+        if t % interval == 0:
+            # plt.cla()
+            ax = fig.add_subplot(111)
+            ax.set_axis_off()
+
+            num_nodes = len(network.nodes)
+            network_radius = num_nodes * 10
+            ax.set_xlim([-1.1 * network_radius, 1.1 * network_radius])
+            ax.set_ylim([-1.1 * network_radius, 1.1 * network_radius])
+
+            for (i, node) in enumerate(network.nodes):
+                node_angle = i * 2 * np.pi / num_nodes
+                node_x = network_radius * np.cos(node_angle)
+                node_y = network_radius * np.sin(node_angle)
+
+                circle = plt.Circle((node_x, node_y), 0.3 * num_nodes, color=cm.hot(node.value))
+                ax.add_patch(circle)
+
+                for neighbour_index in range(i + 1, num_nodes):
+                    if node.connections[neighbour_index]:
+                        neighbour_angle = neighbour_index * 2 * np.pi / num_nodes
+                        neighbour_x = network_radius * np.cos(neighbour_angle)
+                        neighbour_y = network_radius * np.sin(neighbour_angle)
+
+                        ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
+
+            plt.pause(0.3)
+
+    plt.show()
+
 '''
 ==============================================================================================================
 This section contains code for the main function- you should write some code for handling flags here
@@ -448,8 +512,8 @@ def parse_command_line_arguments():
     parser.add_argument('-test_ising', action='store_true', help='Run Ising model test')
 
     parser.add_argument('-defuant', action='store_true', help='Enable Deffuant model simulation')
-    parser.add_argument('-beta', type=float, help='Beta parameter for the Deffuant model')
-    parser.add_argument('-threshold', type=float, help='Threshold parameter for the Deffuant model')
+    parser.add_argument('-beta', type=float, default=0.2, help='Beta parameter for the Deffuant model')
+    parser.add_argument('-threshold', type=float, default=0.2, help='Threshold parameter for the Deffuant model')
     parser.add_argument('-test_defuant', action='store_true', help='Run Deffuant model test')
 
     parser.add_argument('-network', type=int, help='General network simulation')
@@ -458,6 +522,8 @@ def parse_command_line_arguments():
     parser.add_argument('-ring_network', type=int, help='Create a ring network of specified size')
     parser.add_argument('-small_world', type=int, help='Create a small-world network of specified size')
     parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
+
+    parser.add_argument('-use_network', type=int)
 
     return parser.parse_args()
 
@@ -473,14 +539,10 @@ def main():
     
     #task2
     if args.defuant:
-        if args.beta is not None and args.threshold is not None:
-            defuant_main(beta=args.beta, threshold=args.threshold)
-        elif args.beta is not None:
-            defuant_main(beta=args.beta)
-        elif args.threshold is not None:
-            defuant_main(threshold=args.threshold)
+        if args.use_network:
+            use_network(N=args.use_network)
         else:
-            defuant_main()
+            defuant_main(args.beta, args.threshold)
     elif args.test_defuant:
         defuant_test()
 
