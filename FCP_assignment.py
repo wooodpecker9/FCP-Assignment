@@ -408,7 +408,7 @@ def defuant_main(beta=0.2,threshold=0.2):
             ax2.set_xlim(0, t // interval)
             ax2.set_ylabel('opinion')
 
-            fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f} \n \n Steps: {t / interval:.0f}')
+            fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f} \n \n Steps: {t // interval}')
 
             plt.pause(0.05)
 
