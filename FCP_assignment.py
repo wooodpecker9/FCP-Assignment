@@ -4,32 +4,41 @@ import matplotlib.cm as cm
 import argparse
 
 class Node:
+
     def __init__(self, value, number, connections=None):
+
         self.index = number
         self.connections = connections
         self.value = value
 
 
 class Network: 
+
     def __init__(self, nodes=None):
+
         if nodes is None:
             self.nodes = []
         else:
-            self.nodes = nodes 
+            self.nodes = nodes
+
     def get_mean_degree(self):
         #Your code  for task 3 goes here
         pass
+
     def get_mean_clustering(self):
         #Your code for task 3 goes here
         pass
+
     def get_mean_path_length(self):
         #Your code for task 3 goes here
         pass
+
     def make_random_network(self, N, connection_probability=0.5):
         '''
         This function makes a *random* network of size N.
         Each node is connected to each other node with probability p
         '''
+
         self.nodes = []
         for node_number in range(N):
             value = np.random.random()
@@ -41,17 +50,16 @@ class Network:
                 if np.random.random() < connection_probability:
                     node.connections[neighbour_index] = 1
                     self.nodes[neighbour_index].connections[index] = 1
-
                     
     def make_ring_network(self, N, neighbour_range=1):
         '''
         This function makes a *ring* network of size N.
-        Each node is connected to its neighbours depending on the neighbour range n.
+        Each node is connected to its neighbours depending on the neighbour range r.
         '''
         
-        #Your code  for task 4 goes here
-        
+        #Your code for task 4 goes here
         self.nodes = []
+
         for node_number in range(N):
             value = np.random.random()
             connections = [0 for _ in range(N)]
@@ -72,16 +80,16 @@ class Network:
                     node.connections[neighbour_index] = 1
                     self.nodes[neighbour_index].connections[index] = 1
 
-
     def make_small_world_network(self, N, re_wire_prob=0.2):
         '''
         This function makes a *small world* network of size N. 
         Each node if first connected to its 2 closest neighbours. 
-        Then each node is rewired depending on probibility p. 
+        Then each edge is rewired depending on probibility p. 
         '''
+
+        #Your code for task 4 goes here
         self.nodes = []
         neighbour_range = 2
-        
         
         for node_number in range(N):
             value = np.random.random()
@@ -122,7 +130,6 @@ class Network:
                         node.connections[ran] = 1
                         self.nodes[ran].connections[index] = 1
 
-
     def plot(self):
 
         fig = plt.figure()
@@ -149,9 +156,11 @@ class Network:
                     neighbour_y = network_radius * np.sin(neighbour_angle)
                     
                     ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
-
+        
+        plt.show()
 
 def test_networks():
+
     #Ring network
     nodes = []
     num_nodes = 10
@@ -199,7 +208,6 @@ def test_networks():
    
     print("All tests passed")
 
-
 '''
 ==============================================================================================================
 This section contains code for the Ising Model - task 1 in the assignment
@@ -207,7 +215,7 @@ This section contains code for the Ising Model - task 1 in the assignment
 '''
 
 def calculate_agreement(population, row, col, external=0.0):
-    """
+    '''
     This function calculates the change in agreement that would result if the cell at (row, col) were to flip its value.
     Inputs:
         population (numpy array): Grid representing the population's opinions.
@@ -216,7 +224,8 @@ def calculate_agreement(population, row, col, external=0.0):
         external (float): External influence on the cell's opinion.
     Returns:
         change_in_agreement (float): The change in agreement.
-    """
+    '''
+
     n_rows, n_cols = population.shape
     neighbors = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
     agreement = 0
@@ -244,6 +253,7 @@ def ising_step(population, external=0.0, alpha=1.0):
     Inputs: population (numpy array)
             external (float) - optional - the magnitude of any external "pull" on opinion
     '''
+
     n_rows, n_cols = population.shape
     row = np.random.randint(0, n_rows)
     col  = np.random.randint(0, n_cols)
@@ -258,6 +268,7 @@ def plot_ising(im, population):
     '''
     This function will display a plot of the Ising model
     '''
+
     new_im = np.array([[255 if val == -1 else 1 for val in rows] for rows in population], dtype=np.int8)
     im.set_data(new_im)
     plt.pause(0.1)
@@ -267,8 +278,8 @@ def test_ising():
     '''
     This function will test the calculate_agreement function in the Ising model
     '''
+
     print("Testing ising model calculations")
-    
     population = -np.ones((3, 3))
     assert(calculate_agreement(population,1,1)==4), "Test 1"
     
@@ -311,13 +322,17 @@ def ising_main(population, alpha=None, external=0.0):
         print('Step:', frame, end='\r')
         plot_ising(im, population)
 
+
 '''
 ==============================================================================================================
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
 def update_opinion(input, beta, threshold, use_network=False):
-
+    '''
+    
+    '''  
+     
     # randomly choose one person
     if use_network:
         tmp_nodes = input.nodes.copy()
@@ -354,7 +369,10 @@ def update_opinion(input, beta, threshold, use_network=False):
 
 
 def defuant_main(beta=0.2,threshold=0.2):
+    '''
     
+    '''
+
     #Your code for task 2 goes here
     population = 100
     steps = 10000
@@ -383,6 +401,10 @@ def defuant_main(beta=0.2,threshold=0.2):
 
 
 def test_defuant():
+    '''
+    
+    '''
+
     #Your code for task 2 goes here
     population = 100
     steps = 100
@@ -449,6 +471,24 @@ def test_defuant():
         plt.pause(0.05)
     plt.show()
 
+'''
+==============================================================================================================
+This section contains code for the Small World Network - task 4 in the assignment
+==============================================================================================================
+'''
+
+def search(list, zero, one):
+    '''
+    This function searches for the connections [zero, one] in the list
+    Returns true if it is and false if it is not
+    '''
+
+    for l in list:
+        if l[0] == zero and l[1] == one:
+            return True
+        elif l[0] == one and l[1] == zero:
+            return True
+    return False
 
 
 '''
@@ -458,6 +498,10 @@ This section contains code for the task 5
 '''
 
 def use_network(beta=0.5, threshold=0.5, N=100):
+    '''
+    
+    '''
+    
     population = N
     steps = 10000
 
@@ -499,16 +543,6 @@ def use_network(beta=0.5, threshold=0.5, N=100):
     plt.show()
 
 
-# task 4 stuff
-def search(list, zero, one):
-    for l in list:
-        if l[0] == zero and l[1] == one:
-            return True
-        elif l[0] == one and l[1] == zero:
-            return True
-    return False
-
-
 '''
 ==============================================================================================================
 This section contains code for the main function- you should write some code for handling flags here
@@ -523,20 +557,16 @@ def parse_command_line_arguments():
     parser.add_argument('-external', type=float, default=0.0, help='External pull value')
     parser.add_argument('-alpha', type=float, default=1.0, help='Tempurature parameter')
     parser.add_argument('-test_ising', action='store_true', help='Run Ising model test')
-
     parser.add_argument('-defuant', action='store_true', help='Enable Deffuant model simulation')
     parser.add_argument('-beta', type=float, default=0.2, help='Beta parameter for the Deffuant model')
     parser.add_argument('-threshold', type=float, default=0.2, help='Threshold parameter for the Deffuant model')
     parser.add_argument('-test_defuant', action='store_true', help='Run Deffuant model test')
-
     parser.add_argument('-network', type=int, help='General network simulation')
     parser.add_argument('-test_network', action='store_true', help='Run general network test')
-
     parser.add_argument('-ring_network', type=int, help='Create a ring network of specified size')
     parser.add_argument('-small_world', type=int, help='Create a small-world network of specified size')
     parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
-
-    parser.add_argument('-use_network', type=int)
+    parser.add_argument('-use_network', type=int, help='')
 
     return parser.parse_args()
 
@@ -552,24 +582,22 @@ def main():
     
     #task2
     if args.defuant:
-        if args.use_network:
+        if args.use_network: #task 5
             use_network(N=args.use_network)
         else:
             defuant_main(args.beta, args.threshold)
     elif args.test_defuant:
-        defuant_test()
+        test_defuant()
 
     #task 4
     if args.ring_network:
         ring = Network()
         ring.make_ring_network(args.ring_network)
         ring.plot()
-        plt.show()
     elif args.small_world:
         small = Network()
         small.make_small_world_network(args.small_world, args.re_wire)
-        small.plot() # doesnt fully work yet
-        plt.show()
+        small.plot()
 
     if not any([args.defuant, args.test_defuant, args.ising_model, args.test_ising, args.ring_network, args.small_world]):
         print('Please use -h or --help for command usage details.')
