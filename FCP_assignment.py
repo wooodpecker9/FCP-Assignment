@@ -118,29 +118,6 @@ class Network:
 
         new_connection = old_connection
 
-        '''for connection in new_connection:
-            if np.random.random() < re_wire_prob:
-                if np.random.randint(0, 2) == 1:
-                    flag = 1
-                    while flag != 0:
-                        ran = np.random.randint(0, 10)
-                        flag = search(new_connection, index, ran)
-                    connection[1] = ran
-                else:
-                    flag = 1
-                    while flag != 0:
-                        ran = np.random.randint(0, 10)
-                        flag = search(new_connection, index, ran)
-                    connection[0] = ran
-        
-        for (index, node) in enumerate(self.nodes):
-            for neighbour_index in range(index+1, N):
-                if search(old_connection, index, neighbour_index):
-                    node.connections[neighbour_index] = 0
-                    self.nodes[neighbour_index].connections[index] = 0
-                    node.connections[new_connection[search(old_connection, index, neighbour_index)][1]] = 1
-                    self.nodes[new_connection[search(old_connection, index, neighbour_index)][1]].connections[new_connection[search(old_connection, index, neighbour_index)][0]] = 1
-'''
         for (index, node) in enumerate(self.nodes):
             for neighbour_index in range(index+1, N):
                 if search(old_connection, index, neighbour_index):
