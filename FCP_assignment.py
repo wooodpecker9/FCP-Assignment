@@ -389,13 +389,12 @@ def defuant_main(beta=0.2,threshold=0.2):
 
     #Your code for task 2 goes here
     population = 100
-    steps = 10000
+    steps = 10001
     interval = 100
 
     opinions = np.random.rand(population)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8))  # 1 row, 2 columns
-    fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f}')
     for t in range(steps):
         opinions = update_opinion(opinions, beta, threshold)
         if t % interval == 0:
@@ -409,6 +408,8 @@ def defuant_main(beta=0.2,threshold=0.2):
             ax2.set_xlim(0, t // interval)
             ax2.set_ylabel('opinion')
 
+            fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f} \n \n Steps: {t / interval:.0f}')
+
             plt.pause(0.05)
 
     plt.show()
@@ -419,7 +420,7 @@ def defuant_test():
 
     '''
     population = 100
-    steps = 10000
+    steps = 10001
     interval = 100
 
 
