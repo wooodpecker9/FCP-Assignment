@@ -328,6 +328,7 @@ def ising_main(population, alpha=None, external=0.0):
 This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
+
 def update_opinion(input, beta, threshold, use_network=False):
     '''
     
@@ -471,6 +472,7 @@ def test_defuant():
         plt.pause(0.05)
     plt.show()
 
+
 '''
 ==============================================================================================================
 This section contains code for the Small World Network - task 4 in the assignment
@@ -561,8 +563,8 @@ def parse_command_line_arguments():
     parser.add_argument('-beta', type=float, default=0.2, help='Beta parameter for the Deffuant model')
     parser.add_argument('-threshold', type=float, default=0.2, help='Threshold parameter for the Deffuant model')
     parser.add_argument('-test_defuant', action='store_true', help='Run Deffuant model test')
-    parser.add_argument('-network', type=int, help='General network simulation')
-    parser.add_argument('-test_network', action='store_true', help='Run general network test')
+    #parser.add_argument('-network', type=int, help='General network simulation')
+    #parser.add_argument('-test_network', action='store_true', help='Run general network test')
     parser.add_argument('-ring_network', type=int, help='Create a ring network of specified size')
     parser.add_argument('-small_world', type=int, help='Create a small-world network of specified size')
     parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
