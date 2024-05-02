@@ -122,7 +122,7 @@ class Network:
             for neighbour_index in range(index+1, N):
                 if search(old_connection, index, neighbour_index):
                     if np.random.random() < re_wire_prob:
-                        if np.random.randint(0, 1) == 1:
+                        if np.random.randint(0, 2) == 1:
                             flag = True
                             while flag:
                                 ran = np.random.randint(0, N)
@@ -130,7 +130,7 @@ class Network:
                             new_connection[index] = [ran, neighbour_index]
                             node.connections[neighbour_index] = 0
                             self.nodes[neighbour_index].connections[index] = 0
-                            node.connections[neighbour_index] = 1
+                            self.nodes[ran].connections[neighbour_index] = 1
                             self.nodes[neighbour_index].connections[ran] = 1
                         else:
                             flag = True
