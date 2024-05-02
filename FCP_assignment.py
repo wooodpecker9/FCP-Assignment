@@ -345,7 +345,7 @@ This section contains code for the Defuant Model - task 2 in the assignment
 def update_opinion(input, beta, threshold, use_network=False):
     '''
     This function updates individuals' opinions based on the beta parameter and a threshold value.
-    If use_network=True, it updates opinions considering the social network structure
+    If use_network=True, it updates opinions considering the social network structure.
 
     - input: Input data containing individuals' opinions.
     - beta: The influence factor for opinion updating.
@@ -426,7 +426,7 @@ def defuant_main(beta=0.2,threshold=0.2):
 
 def defuant_test():
     '''
-    This function will test the defuant model with different values of beta and threshold
+    This function will test the defuant model with different values of beta and threshold.
     '''
     population = 100
     steps = 10001
