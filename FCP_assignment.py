@@ -96,39 +96,75 @@ class Network:
             connections = [0 for _ in range(N)]
             self.nodes.append(Node(value, node_number, connections))
         
-        connection = []
+        old_connection = []
 
         for (index, node) in enumerate(self.nodes):
             for neighbour_index in range(index+1, N):
                 if (index + neighbour_range) > N:
                     if (index + neighbour_range - N) <= neighbour_index and (index - neighbour_range) <= neighbour_index:
-                        connection.append([index, neighbour_index])
+                        old_connection.append([index, neighbour_index])
                         node.connections[neighbour_index] = 1
                         self.nodes[neighbour_index].connections[index] = 1
                 elif (index - neighbour_range) < N:
                      if (index + neighbour_range) <= neighbour_index and (index - neighbour_range + N) <= neighbour_index:
-                        connection.append([index, neighbour_index])
+                        old_connection.append([index, neighbour_index])
                         node.connections[neighbour_index] = 1
                         self.nodes[neighbour_index].connections[index] = 1
                 
                 if (index + neighbour_range) >= neighbour_index and (index - neighbour_range) <= neighbour_index:
-                    connection.append([index, neighbour_index])
+                    old_connection.append([index, neighbour_index])
                     node.connections[neighbour_index] = 1
                     self.nodes[neighbour_index].connections[index] = 1
 
+        new_connection = old_connection
+
+        '''for connection in new_connection:
+            if np.random.random() < re_wire_prob:
+                if np.random.randint(0, 2) == 1:
+                    flag = 1
+                    while flag != 0:
+                        ran = np.random.randint(0, 10)
+                        flag = search(new_connection, index, ran)
+                    connection[1] = ran
+                else:
+                    flag = 1
+                    while flag != 0:
+                        ran = np.random.randint(0, 10)
+                        flag = search(new_connection, index, ran)
+                    connection[0] = ran
+        
         for (index, node) in enumerate(self.nodes):
             for neighbour_index in range(index+1, N):
-                if search(connection, index, neighbour_index):
+                if search(old_connection, index, neighbour_index):
+                    node.connections[neighbour_index] = 0
+                    self.nodes[neighbour_index].connections[index] = 0
+                    node.connections[new_connection[search(old_connection, index, neighbour_index)][1]] = 1
+                    self.nodes[new_connection[search(old_connection, index, neighbour_index)][1]].connections[new_connection[search(old_connection, index, neighbour_index)][0]] = 1
+'''
+        for (index, node) in enumerate(self.nodes):
+            for neighbour_index in range(index+1, N):
+                if search(old_connection, index, neighbour_index):
                     if np.random.random() < re_wire_prob:
-                        flag = True
-                        while flag:
-                            ran = np.random.randint(0, 10)
-                            flag = search(connection, index, ran)
-                        connection[index] = [index, ran]
-                        node.connections[neighbour_index] = 0
-                        self.nodes[neighbour_index].connections[index] = 0
-                        node.connections[ran] = 1
-                        self.nodes[ran].connections[index] = 1
+                        if np.random.randint(0, 1) == 1:
+                            flag = True
+                            while flag:
+                                ran = np.random.randint(0, N)
+                                flag = search(new_connection, index, ran)
+                            new_connection[index] = [ran, neighbour_index]
+                            node.connections[neighbour_index] = 0
+                            self.nodes[neighbour_index].connections[index] = 0
+                            node.connections[neighbour_index] = 1
+                            self.nodes[neighbour_index].connections[ran] = 1
+                        else:
+                            flag = True
+                            while flag:
+                                ran = np.random.randint(0, N)
+                                flag = search(new_connection, ran, neighbour_index)
+                            new_connection[index] = [index, ran]
+                            node.connections[neighbour_index] = 0
+                            self.nodes[neighbour_index].connections[index] = 0
+                            node.connections[ran] = 1
+                            self.nodes[ran].connections[index] = 1
 
     def plot(self):
 
@@ -484,13 +520,12 @@ def search(list, zero, one):
     This function searches for the connections [zero, one] in the list
     Returns true if it is and false if it is not
     '''
-
+    point = -1
     for l in list:
+        point += 1
         if l[0] == zero and l[1] == one:
-            return True
-        elif l[0] == one and l[1] == zero:
-            return True
-    return False
+            return point
+    return 0
 
 
 '''
