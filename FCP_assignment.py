@@ -127,21 +127,21 @@ class Network:
                             while flag:
                                 ran = np.random.randint(0, N)
                                 flag = search(new_connection, index, ran)
-                            new_connection[index] = [ran, neighbour_index]
-                            node.connections[neighbour_index] = 0
-                            self.nodes[neighbour_index].connections[index] = 0
-                            self.nodes[ran].connections[neighbour_index] = 1
-                            self.nodes[neighbour_index].connections[ran] = 1
+                                new_connection[index] = [ran, neighbour_index]
+                                node.connections[neighbour_index] = 0
+                                self.nodes[neighbour_index].connections[index] = 0
+                                self.nodes[ran].connections[neighbour_index] = 1
+                                self.nodes[neighbour_index].connections[ran] = 1
                         else:
                             flag = True
                             while flag:
                                 ran = np.random.randint(0, N)
                                 flag = search(new_connection, ran, neighbour_index)
-                            new_connection[index] = [index, ran]
-                            node.connections[neighbour_index] = 0
-                            self.nodes[neighbour_index].connections[index] = 0
-                            node.connections[ran] = 1
-                            self.nodes[ran].connections[index] = 1
+                                new_connection[index] = [index, ran]
+                                node.connections[neighbour_index] = 0
+                                self.nodes[neighbour_index].connections[index] = 0
+                                node.connections[ran] = 1
+                                self.nodes[ran].connections[index] = 1
 
     def plot(self):
 
@@ -344,8 +344,15 @@ This section contains code for the Defuant Model - task 2 in the assignment
 
 def update_opinion(input, beta, threshold, use_network=False):
     '''
-    
-    '''  
+    This function updates individuals' opinions based on the beta parameter and a threshold value.
+    If use_network=True, it updates opinions considering the social network structure
+
+    - input: Input data containing individuals' opinions.
+    - beta: The influence factor for opinion updating.
+    - threshold: A threshold for updating opinions,
+                 where updates occur when the difference between two individuals' opinions is less than this value.
+    - use_network: A boolean indicating whether to use the social network structure for opinion updating.
+    '''
      
     # randomly choose one person
     if use_network:
@@ -384,7 +391,9 @@ def update_opinion(input, beta, threshold, use_network=False):
 
 def defuant_main(beta=0.2,threshold=0.2):
     '''
-    
+    This function generates random initial opinions for a population, and updates them over time,
+    visually displays the process with live graphs showing opinion distribution and change.
+    steps are set as 10001, updating the plot for each 100 steps.
     '''
 
     #Your code for task 2 goes here
@@ -408,7 +417,7 @@ def defuant_main(beta=0.2,threshold=0.2):
             ax2.set_xlim(0, t // interval)
             ax2.set_ylabel('opinion')
 
-            fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f} \n \n Steps: {t / interval:.0f}')
+            fig.suptitle(f'Coupling: {beta:.6f}, Threshold: {threshold:.6f} \n \n Steps: {t // interval}')
 
             plt.pause(0.05)
 
@@ -417,7 +426,7 @@ def defuant_main(beta=0.2,threshold=0.2):
 
 def defuant_test():
     '''
-
+    This function will test the defuant model with different values of beta and threshold
     '''
     population = 100
     steps = 10001
@@ -527,11 +536,14 @@ This section contains code for the task 5
 
 def use_network(beta=0.5, threshold=0.5, N=100):
     '''
-    
+    The function simulates and displays an opinion propagation process
+    within a small-world network and the defuant model.
+    Steps are set as 10001, updating the plot for each 100 steps.
+    -N: the size of the network, allowing the user to set.
     '''
 
     population = N
-    steps = 10000
+    steps = 10001
 
     interval = 100
     network = Network()
