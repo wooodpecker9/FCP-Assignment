@@ -438,7 +438,7 @@ def defuant_test():
     opinions4 = opinions
 
     fig, axs = plt.subplots(2, 4, figsize=(12, 10))  # 1 row, 2 columns
-    fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.3, hspace=0.2)
+    fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.3, hspace=0.3)
     for t in range(steps):
         opinions1 = update_opinion(opinions1, beta1, threshold1)
         opinions2 = update_opinion(opinions2, beta2, threshold1)
@@ -449,56 +449,53 @@ def defuant_test():
             axs[0, 0].cla()
             axs[0, 0].set_xlim(0,1)
             axs[0, 0].hist(opinions1)
-            axs[0, 0].title.set_text("Coupling: 0.500000, ")
-            axs[0, 0].title.set_position([0.65, 1.0])
+            axs[0, 0].set_xlabel('opinion')
+            axs[0, 0].set_title(f'Coupling: {beta1:.6f},', x=0.65, y=1.05)
 
             axs[0, 1].scatter([t // interval] * population, opinions1, color='red')
             axs[0, 1].set_ylim(0, 1)
             axs[0, 1].set_xlim(0, t // interval)
             axs[0, 1].set_ylabel('opinion')
-            axs[0, 1].title.set_text("Threshold: 0.500000")
-            axs[0, 1].title.set_position([0.3, 1.0])
+            axs[0, 1].set_title(f'Threshold: {threshold1:.6f}', x=0.275, y=1.05)
 
             axs[0, 2].cla()
             axs[0, 2].set_xlim(0,1)
             axs[0, 2].hist(opinions2)
-            axs[0, 2].title.set_text("Coupling: 0.100000, ")
-            axs[0, 2].title.set_position([0.65, 1.0])
+            axs[0, 2].set_xlabel('opinion')
+            axs[0, 2].set_title(f'Coupling: {beta2:.6f},', x=0.65, y=1.05)
 
             axs[0, 3].scatter([t // interval] * population, opinions2, color='red')
             axs[0, 3].set_ylim(0, 1)
             axs[0, 3].set_xlim(0, t // interval)
             axs[0, 3].set_ylabel('opinion')
-            axs[0, 3].title.set_text("Threshold: 0.500000")
-            axs[0, 3].title.set_position([0.3, 1.0])
+            axs[0, 3].set_title(f'Threshold: {threshold1:.6f}', x=0.275, y=1.05)
 
             axs[1, 0].cla()
             axs[1, 0].set_xlim(0,1)
             axs[1, 0].hist(opinions3)
-            axs[1, 0].title.set_text("Coupling: 0.500000, ")
-            axs[1, 0].title.set_position([0.65, 1.0])
+            axs[1, 0].set_xlabel('opinion')
+            axs[1, 0].set_title(f'Coupling: {beta1:.6f},', x=0.65, y=1.05)
 
             axs[1, 1].scatter([t // interval] * population, opinions3, color='red')
             axs[1, 1].set_ylim(0, 1)
             axs[1, 1].set_xlim(0, t // interval)
             axs[1, 1].set_ylabel('opinion')
-            axs[1, 1].title.set_text("Threshold: 0.100000")
-            axs[1, 1].title.set_position([0.3, 1.0])
+            axs[1, 1].set_title(f'Threshold: {threshold2:.6f}', x=0.275, y=1.05)
 
             axs[1, 2].cla()
             axs[1, 2].set_xlim(0,1)
             axs[1, 2].hist(opinions4)
-            axs[1, 2].title.set_text("Coupling: 0.100000, ")
-            axs[1, 2].title.set_position([0.65, 1.0])
+            axs[1, 2].set_xlabel('opinion')
+            axs[1, 2].set_title(f'Coupling: {beta2:.6f},', x=0.65, y=1.05)
 
             axs[1, 3].scatter([t // interval] * population, opinions4, color='red')
             axs[1, 3].set_ylim(0, 1)
             axs[1, 3].set_xlim(0, t // interval)
             axs[1, 3].set_ylabel('opinion')
-            axs[1, 3].title.set_text("Threshold: 0.200000")
-            axs[1, 3].title.set_position([0.3, 1.0])
+            axs[1, 3].set_title(f'Threshold: {threshold3:.6f}', x=0.275, y=1.05)
 
             plt.pause(0.05)
+
     plt.show()
 
 
