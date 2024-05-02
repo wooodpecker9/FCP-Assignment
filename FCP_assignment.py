@@ -537,7 +537,7 @@ def use_network(beta=0.5, threshold=0.5, N=100):
     '''
     The function simulates and displays an opinion propagation process
     within a small-world network and the defuant model.
-    Steps are set as 10001, updating the plot for each 100 steps.
+    Steps are set dynamically as more nodes require more time to change, updating the plot for each 10 steps.
     -N: the size of the network, allowing the user to set.
     '''
 
