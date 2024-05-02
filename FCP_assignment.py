@@ -11,7 +11,6 @@ class Node:
         self.connections = connections
         self.value = value
 
-
 class Network: 
 
     def __init__(self, nodes=None):
@@ -38,7 +37,6 @@ class Network:
         This function makes a *random* network of size N.
         Each node is connected to each other node with probability p
         '''
-
         self.nodes = []
         for node_number in range(N):
             value = np.random.random()
@@ -50,13 +48,13 @@ class Network:
                 if np.random.random() < connection_probability:
                     node.connections[neighbour_index] = 1
                     self.nodes[neighbour_index].connections[index] = 1
-                    
+
+
     def make_ring_network(self, N, neighbour_range=1):
         '''
         This function makes a *ring* network of size N.
         Each node is connected to its neighbours depending on the neighbour range r.
         '''
-        
         #Your code for task 4 goes here
         self.nodes = []
 
@@ -80,13 +78,13 @@ class Network:
                     node.connections[neighbour_index] = 1
                     self.nodes[neighbour_index].connections[index] = 1
 
+
     def make_small_world_network(self, N, re_wire_prob=0.2):
         '''
         This function makes a *small world* network of size N. 
         Each node if first connected to its 2 closest neighbours. 
         Then each edge is rewired depending on probibility p. 
         '''
-
         #Your code for task 4 goes here
         self.nodes = []
         neighbour_range = 2
@@ -143,6 +141,7 @@ class Network:
                                 node.connections[ran] = 1
                                 self.nodes[ran].connections[index] = 1
 
+
     def plot(self):
 
         fig = plt.figure()
@@ -159,7 +158,7 @@ class Network:
             node_x = network_radius * np.cos(node_angle)
             node_y = network_radius * np.sin(node_angle)
            
-            circle = plt.Circle((node_x, node_y), 0.3*num_nodes, color=cm.hot(node.value))
+            circle = plt.Circle((node_x, node_y), 0.5*num_nodes, color=cm.hot(node.value))
             ax.add_patch(circle)
             
             for neighbour_index in range(i+1, num_nodes):
@@ -171,6 +170,7 @@ class Network:
                     ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
         
         plt.show()
+
 
 def test_networks():
 
@@ -353,7 +353,6 @@ def update_opinion(input, beta, threshold, use_network=False):
                  where updates occur when the difference between two individuals' opinions is less than this value.
     - use_network: A boolean indicating whether to use the social network structure for opinion updating.
     '''
-     
     # randomly choose one person
     if use_network:
         tmp_nodes = input.nodes.copy()
@@ -543,14 +542,18 @@ def use_network(beta=0.5, threshold=0.5, N=100):
     '''
 
     population = N
-    steps = 10001
-
-    interval = 100
+    
+    interval = 10
+    steps = population*20
+    mean_opinions = []
     network = Network()
     network.make_small_world_network(population, re_wire_prob=0.2)
+    
 
     fig = plt.figure()
     for t in range(steps):
+        mean_opinion = np.mean([node.value for node in network.nodes])
+        mean_opinions.append(mean_opinion)
         network = update_opinion(network, beta, threshold, use_network=True)
         if t % interval == 0:
             # plt.cla()
@@ -567,7 +570,7 @@ def use_network(beta=0.5, threshold=0.5, N=100):
                 node_x = network_radius * np.cos(node_angle)
                 node_y = network_radius * np.sin(node_angle)
 
-                circle = plt.Circle((node_x, node_y), 0.3 * num_nodes, color=cm.hot(node.value))
+                circle = plt.Circle((node_x, node_y), 0.5 * num_nodes, color=cm.hot(node.value))
                 ax.add_patch(circle)
 
                 for neighbour_index in range(i + 1, num_nodes):
@@ -578,8 +581,15 @@ def use_network(beta=0.5, threshold=0.5, N=100):
 
                         ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
 
-            plt.pause(0.3)
+            plt.pause(0.25)
+   
+    plt.close(fig)
+    plt.show()
 
+    plt.plot(range(steps), mean_opinions)
+    plt.xlabel('Time Steps')
+    plt.ylabel('Mean Opinion')
+    plt.title('Mean Opinion over Time')
     plt.show()
 
 
@@ -606,11 +616,12 @@ def parse_command_line_arguments():
     parser.add_argument('-ring_network', type=int, help='Create a ring network of specified size')
     parser.add_argument('-small_world', type=int, help='Create a small-world network of specified size')
     parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
-    parser.add_argument('-use_network', type=int, help='')
+    parser.add_argument('-use_network', type=int, help='Add to defaunt to simulate with netowrk')
 
     return parser.parse_args()
 
 def main():
+    
     args = parse_command_line_arguments()
 
     #task 1
