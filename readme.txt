@@ -1,17 +1,21 @@
 Requirements:
-Install matplotlib
+- Install matplotlib
+- Install numpy
 
-Run assignment.py along with a argument
+Usage:
+Run FCP-assignment.py along with one of the following arguments:
 
-List of arguments:
--ising_model
--alpha <alpha>
--external <H>
--test_ising
--defuant
--beta <beta>
--threshold <threshold>
--ring_network <N>
--small_world <N>
--re_wire <probability>
--use_network <N> note: only works after -defuant
+Arguments:
+- -ising_model: Run the Ising Model simulation.
+- -alpha <alpha>: Set the temperature parameter for the Ising Model (default: 1.0).
+- -external <H>: Set the external pull value for the Ising Model (default: 0.0).
+- -test_ising: Run tests for the Ising Model.
+- -defuant: Run the Defuant Model simulation.
+- -beta <beta>: Set the beta parameter for the Defuant Model (default: 0.2).
+- -threshold <threshold>: Set the threshold parameter for the Defuant Model (default: 0.2).
+- -ring_network <N>: Create a ring network of size N.
+- -small_world <N>: Create a small-world network of size N.
+- -re_wire <probability>: Set the rewiring probability for the small-world network (default: 0.2).
+- -use_network <N>: Simulate opinion propagation within a small-world network of size N (only works after -defuant).
+
+Note: Replace <alpha>, <H>, <beta>, <threshold>, and <N> with appropriate numerical values.
