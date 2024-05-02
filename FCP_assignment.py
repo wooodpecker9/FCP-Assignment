@@ -400,75 +400,91 @@ def defuant_main(beta=0.2,threshold=0.2):
     plt.show()
 
 
-def test_defuant():
-    '''
-    
+def defuant_test():
     '''
 
-    #Your code for task 2 goes here
+    '''
     population = 100
-    steps = 100
-   
+    steps = 10000
+    interval = 100
+
+
     opinions = np.random.rand(population)
-    
+
     beta1 = 0.5
     beta2 = 0.1
-    
+
     threshold1 = 0.5
     threshold2 = 0.1
     threshold3 = 0.2
-    
+
     opinions1 = opinions
     opinions2 = opinions
     opinions3 = opinions
     opinions4 = opinions
-    
+
     fig, axs = plt.subplots(2, 4, figsize=(12, 10))  # 1 row, 2 columns
     fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.3, hspace=0.2)
-    
     for t in range(steps):
         opinions1 = update_opinion(opinions1, beta1, threshold1)
         opinions2 = update_opinion(opinions2, beta2, threshold1)
         opinions3 = update_opinion(opinions3, beta1, threshold2)
         opinions4 = update_opinion(opinions4, beta2, threshold3)
-        
-        axs[0, 0].cla()
-        axs[0, 0].set_xlim(0, 1)
-        axs[0, 0].hist(opinions1)
-        
-        axs[0, 1].scatter([t] * steps, opinions1, color='red')
-        axs[0, 1].set_ylim(0, 1)
-        axs[0, 1].set_xlim(0, t + 1)
-        axs[0, 1].set_ylabel('Opinion')
-       
-        axs[0, 2].cla()
-        axs[0, 2].set_xlim(0, 1)
-        axs[0, 2].hist(opinions2)
-        
-        axs[0, 3].scatter([t] * steps, opinions2, color='red')
-        axs[0, 3].set_ylim(0, 1)
-        axs[0, 3].set_xlim(0, t + 1)
-        axs[0, 3].set_ylabel('Opinion')
-       
-        axs[1, 0].cla()
-        axs[1, 0].set_xlim(0, 1)
-        axs[1, 0].hist(opinions3)
-       
-        axs[1, 1].scatter([t] * steps, opinions3, color='red')
-        axs[1, 1].set_ylim(0, 1)
-        axs[1, 1].set_xlim(0, t + 1)
-        axs[1, 1].set_ylabel('Opinion')
-        
-        axs[1, 2].cla()
-        axs[1, 2].set_xlim(0, 1)
-        axs[1, 2].hist(opinions4)
-        
-        axs[1, 3].scatter([t] * steps, opinions4, color='red')
-        axs[1, 3].set_ylim(0, 1)
-        axs[1, 3].set_xlim(0, t + 1)
-        axs[1, 3].set_ylabel('Opinion')
-        
-        plt.pause(0.05)
+
+        if t % interval == 0:
+            axs[0, 0].cla()
+            axs[0, 0].set_xlim(0,1)
+            axs[0, 0].hist(opinions1)
+            axs[0, 0].title.set_text("Coupling: 0.500000, ")
+            axs[0, 0].title.set_position([0.65, 1.0])
+
+            axs[0, 1].scatter([t // interval] * population, opinions1, color='red')
+            axs[0, 1].set_ylim(0, 1)
+            axs[0, 1].set_xlim(0, t // interval)
+            axs[0, 1].set_ylabel('opinion')
+            axs[0, 1].title.set_text("Threshold: 0.500000")
+            axs[0, 1].title.set_position([0.3, 1.0])
+
+            axs[0, 2].cla()
+            axs[0, 2].set_xlim(0,1)
+            axs[0, 2].hist(opinions2)
+            axs[0, 2].title.set_text("Coupling: 0.100000, ")
+            axs[0, 2].title.set_position([0.65, 1.0])
+
+            axs[0, 3].scatter([t // interval] * population, opinions2, color='red')
+            axs[0, 3].set_ylim(0, 1)
+            axs[0, 3].set_xlim(0, t // interval)
+            axs[0, 3].set_ylabel('opinion')
+            axs[0, 3].title.set_text("Threshold: 0.500000")
+            axs[0, 3].title.set_position([0.3, 1.0])
+
+            axs[1, 0].cla()
+            axs[1, 0].set_xlim(0,1)
+            axs[1, 0].hist(opinions3)
+            axs[1, 0].title.set_text("Coupling: 0.500000, ")
+            axs[1, 0].title.set_position([0.65, 1.0])
+
+            axs[1, 1].scatter([t // interval] * population, opinions3, color='red')
+            axs[1, 1].set_ylim(0, 1)
+            axs[1, 1].set_xlim(0, t // interval)
+            axs[1, 1].set_ylabel('opinion')
+            axs[1, 1].title.set_text("Threshold: 0.100000")
+            axs[1, 1].title.set_position([0.3, 1.0])
+
+            axs[1, 2].cla()
+            axs[1, 2].set_xlim(0,1)
+            axs[1, 2].hist(opinions4)
+            axs[1, 2].title.set_text("Coupling: 0.100000, ")
+            axs[1, 2].title.set_position([0.65, 1.0])
+
+            axs[1, 3].scatter([t // interval] * population, opinions4, color='red')
+            axs[1, 3].set_ylim(0, 1)
+            axs[1, 3].set_xlim(0, t // interval)
+            axs[1, 3].set_ylabel('opinion')
+            axs[1, 3].title.set_text("Threshold: 0.200000")
+            axs[1, 3].title.set_position([0.3, 1.0])
+
+            plt.pause(0.05)
     plt.show()
 
 '''
@@ -501,7 +517,7 @@ def use_network(beta=0.5, threshold=0.5, N=100):
     '''
     
     '''
-    
+
     population = N
     steps = 10000
 
@@ -587,7 +603,7 @@ def main():
         else:
             defuant_main(args.beta, args.threshold)
     elif args.test_defuant:
-        test_defuant()
+        defuant_test()
 
     #task 4
     if args.ring_network:
