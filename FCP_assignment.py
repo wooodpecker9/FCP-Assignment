@@ -650,7 +650,7 @@ def main():
     #task2
     if defuant:
         if network_use: #task 5
-            use_network(N=use_network)
+            use_network(N=network_use)
         else:
             defuant_main(beta, threshold)
     elif test_defuant:
