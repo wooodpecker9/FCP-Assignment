@@ -544,7 +544,7 @@ def use_network(beta=0.5, threshold=0.5, N=100):
     population = N
     
     interval = 10
-    steps = population*20
+    steps = population * 20
     mean_opinions = []
     network = Network()
     network.make_small_world_network(population, re_wire_prob=0.2)
@@ -650,7 +650,7 @@ def main():
     #task2
     if defuant:
         if network_use: #task 5
-            use_network(N=use_network)
+            use_network(N=network_use)
         else:
             defuant_main(beta, threshold)
     elif test_defuant:
