@@ -4,7 +4,7 @@ Requirements:
 - Install numpy
 
 Usage:
-Run FCP-assignment.py along with one of the following arguments:
+Run assignment.py along with one of the following arguments:
 
 Arguments:
 - -ising_model: Run the Ising Model simulation.
