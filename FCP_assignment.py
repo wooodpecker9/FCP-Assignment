@@ -544,7 +544,7 @@ def use_network(beta=0.5, threshold=0.5, N=100):
     population = N
     
     interval = 10
-    steps = population*20
+    steps = population * 20
     mean_opinions = []
     network = Network()
     network.make_small_world_network(population, re_wire_prob=0.2)
