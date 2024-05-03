@@ -618,39 +618,55 @@ def parse_command_line_arguments():
     parser.add_argument('-re_wire', type=float, default=0.2, help='Rewiring probability for the small-world network')
     parser.add_argument('-use_network', type=int, help='Add to defaunt to simulate with netowrk')
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    ising_model = args.ising_model
+    external = args.external
+    alpha = args.alpha
+    test_ising = args.test_ising
+    defuant = args.defuant
+    beta = args.beta
+    threshold = args.threshold
+    test_defuant = args.test_defuant
+    #network = args.network
+    #test_network = args.test_network
+    ring_network = args.ring_network
+    small_world = args.small_world
+    re_wire = args.re_wire
+    use_network = args.use_network
+
+    return ising_model, external, alpha, test_ising, defuant, beta, threshold, test_defuant, ring_network, small_world, re_wire, use_network
 
 def main():
     
-    args = parse_command_line_arguments()
+    (ising_model, external, alpha, ising_test, defuant, beta, threshold, test_defuant, ring_network, small_world, re_wire, network_use) = parse_command_line_arguments()
 
     #task 1
-    if args.ising_model:
+    if ising_model:
         population = np.random.choice([-1, 1], size=(100, 100))
-        ising_main(population, args.alpha, args.external)
-    elif args.test_ising:
+        ising_main(population, alpha, external)
+    elif ising_test:
         test_ising()
     
     #task2
-    if args.defuant:
-        if args.use_network: #task 5
-            use_network(N=args.use_network)
+    if defuant:
+        if network_use: #task 5
+            use_network(N=use_network)
         else:
-            defuant_main(args.beta, args.threshold)
-    elif args.test_defuant:
+            defuant_main(beta, threshold)
+    elif test_defuant:
         defuant_test()
 
     #task 4
-    if args.ring_network:
+    if ring_network:
         ring = Network()
-        ring.make_ring_network(args.ring_network)
+        ring.make_ring_network(ring_network)
         ring.plot()
-    elif args.small_world:
+    elif small_world:
         small = Network()
-        small.make_small_world_network(args.small_world, args.re_wire)
+        small.make_small_world_network(small_world, re_wire)
         small.plot()
 
-    if not any([args.defuant, args.test_defuant, args.ising_model, args.test_ising, args.ring_network, args.small_world]):
+    if not any([defuant, test_defuant, ising_model, ising_test, ring_network, small_world]):
         print('Please use -h or --help for command usage details.')
 
 if __name__ == "__main__":
